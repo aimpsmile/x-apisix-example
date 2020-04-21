@@ -1,2 +1,1 @@
-# x-apisix-example
-x-apisix demo 
+# x-apisix-example 是x-apisix的demo
