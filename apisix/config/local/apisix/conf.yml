@@ -1,0 +1,53 @@
+global:
+  log:
+    level: debug
+    logFileDir: /logs
+    maxSize: 10
+    maxBackups: 3
+    maxAge: 10
+    skip: 0
+conf:
+  check:
+    retres: 3
+    interval: 5
+  leader:
+    id: "monitor-default"
+    group: "gateway"
+    nodes:
+      - "etcd.service:2379"
+  gateway:
+    timeout: 5000
+    retries: 1
+    apikey: "edd1c9f034335f136f87ad84b625c8f1"
+    baseurl: "http://apisix.service:8888/apisix/admin"
+    protoPath: "/storage/code/examples/micro-to-apisix/grpc/proto"
+    forbidRoutes:
+      #	服务的状态
+      /stats: true
+      #	健康检查
+      /health: true
+  filter:
+    -
+      bu: "aimgo"
+      stype: "web"
+      module: "*"
+      ver:
+        "*":
+          routeTpl: "yaml/web.routes.yaml"
+          upstreamTpl: "yaml/web.upstreams.yaml"
+          tplFormat: "yaml"
+          hosts:
+            - "web.uqudu.com"
+            - "web2.uqudu.com"
+    -
+      bu: "aimgo"
+      stype: "http2"
+      module: "*"
+      ver:
+        "*":
+          routeTpl: "yaml/grpc.routes.yaml"
+          upstreamTpl: "yaml/grpc.upstreams.yaml"
+          tplFormat: "yaml"
+          hosts:
+            - "srv.uqudu.com"
+            - "http2.uqudu.com"

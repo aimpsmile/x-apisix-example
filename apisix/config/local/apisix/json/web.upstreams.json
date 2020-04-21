@@ -1,0 +1,44 @@
+{{- $len := sub (len .Nodes) 1 }}
+{
+  "desc": "{{ .Desc }}",
+  "type": "roundrobin",
+  "retries": {{- len .Nodes }},
+  "key":"",
+  "timeout": {
+    "connect":0.5,
+    "send":1,
+    "read":2
+  },
+  "checks": {
+      "active": {
+        "type": "http",
+        "http_path": "/health",
+        "req_headers": ["User-Agent: apisix.health,curl/7.29.0"],
+        "healthy": {
+          "interval": 2,
+          "successes": 1
+        },
+        "unhealthy": {
+          "interval": 1,
+          "http_failures": 2
+        }
+    },
+    "passive": {
+      "healthy": {
+        "http_statuses": [200, 201],
+        "successes": 3
+      },
+      "unhealthy": {
+        "http_statuses": [500,501,502,503,504,505,506],
+        "http_failures": 3,
+        "tcp_failures": 3
+      }
+    }
+  },
+  "enable_websocket":true,
+  "nodes": {
+    {{- range $key,$val := .Nodes }}
+    "{{ $val.Address }}": 1{{- if lt $key $len }},{{- end }}
+    {{- end }}
+  }
+}

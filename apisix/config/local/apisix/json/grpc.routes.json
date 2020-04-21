@@ -1,0 +1,30 @@
+{{- $lenMethod := sub (len .Methods) 1 }}
+{{- $lenHosts := sub (len .Svariable.ModuleVeh.Hosts) 1 }}
+{
+  "desc": "{{ .Desc }}",
+  "priority": 1000,
+  "methods": [
+    {{- range $k,$v := .Methods }}
+      "{{ $v }}"{{- if lt $k $lenMethod }},{{- end }}
+    {{- end }}
+  ],
+  "uris": [
+"/{{ .Svariable.Sver }}/{{ .Svariable.Module }}/{{ trimPrefix .Endpoint.Metadata.path "/" }}"
+  ],
+  "hosts": [
+    {{- range $key,$val := .Svariable.ModuleVeh.Hosts }}
+        "{{ $val }}"{{- if lt $key $lenHosts }},{{- end }}
+    {{- end }}
+  ],
+  "plugins": {
+    "grpc-transcode": {
+        "proto_id": "{{ .ProtoID }}",
+        "service": "{{ .Svariable.ProtoPackage }}.{{ .Endpoint.Metadata.grpc_service }}",
+        "method": "{{ .Endpoint.Metadata.grpc_method }}",
+        "pb_option":["int64_as_string"]
+    },
+    "gheader-plugin" : {}
+  },
+  "service_protocol": "grpc",
+  "upstream_id": "{{ .ServiceID }}"
+}

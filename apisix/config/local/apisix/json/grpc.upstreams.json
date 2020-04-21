@@ -1,0 +1,17 @@
+{{- $len := sub (len .Nodes) 1 }}
+{
+  "desc": "{{ .Desc }}",
+  "type": "roundrobin",
+  "retries": {{- len .Nodes }},
+  "key":"",
+  "timeout": {
+    "connect":0.5,
+    "send":1,
+    "read":2
+  },
+  "nodes": {
+    {{- range $key,$val := .Nodes }}
+    "{{ $val.Address }}": 1{{- if lt $key $len }},{{- end }}
+    {{- end }}
+  }
+}

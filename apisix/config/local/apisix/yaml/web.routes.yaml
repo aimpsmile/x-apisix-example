@@ -1,0 +1,17 @@
+desc: "{{ .Desc }}"
+priority: 100
+methods:
+  - POST
+  - GET
+  - PUT
+  - DELETE
+  - PATCH
+uris:
+  - "/{{ .Svariable.Sver }}/{{ .Svariable.Module }}{{- if eq .Endpoint.Name "/" }}/*{{else}}{{ trimPrefix  .Endpoint.Name (printf "/%s/%s" .Svariable.Sver .Svariable.Module) }}{{end}}"
+hosts:
+  {{- range $key,$val := .Svariable.ModuleVeh.Hosts }}
+  - "{{ $val }}"
+  {{- end }}
+service_protocol: "http"
+upstream_id: "{{ .ServiceID }}"
+plugins: {}

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package aimgo.passport.http2.v1;
+import "google/protobuf/timestamp.proto";
+
+service SayService {
+	rpc Hello(HelloRequest) returns (HelloResponse) {
+	}
+	rpc Update(UpdateRequest) returns (UpdateResponse) {}
+}
+enum Eplat {
+	//	开发心
+	EPLAT_UNSPECIFIED = 0;
+	EPLAT_UNKNOWN = 1;
+	EPLAT_WEB = 2;
+	EPLAT_M = 3;
+	EPLAT_ANDROID = 4;
+	EPLAT_IOS = 5;
+};
+message HelloRequest {
+	//	请求名称
+	string name = 1 ;
+}
+message HelloResponse {
+	int32 code = 1;
+	string msg = 2;
+	repeated Data data = 3;
+}
+message UpdateRequest {
+	string name = 1;
+}
+message UpdateResponse {
+	int32 code = 1;
+	string msg = 2;
+}
+
+message Data {
+	Eplat plat  = 1;
+	string confmsg = 2;
+	google.protobuf.Timestamp order_time = 3;
+}

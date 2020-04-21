@@ -1,0 +1,22 @@
+desc: "{{ .Desc }}"
+priority: 1000
+methods:
+  {{- range $k,$v := .Methods }}
+  - "{{ $v }}"
+  {{- end }}
+uris:
+  - "/{{ .Svariable.Sver }}/{{ .Svariable.Module }}/{{ trimPrefix .Endpoint.Metadata.path "/" }}"
+hosts:
+  {{- range $key,$val := .Svariable.ModuleVeh.Hosts }}
+  - "{{ $val }}"
+  {{- end }}
+service_protocol: "grpc"
+upstream_id: "{{ .ServiceID }}"
+plugins:
+  grpc-transcode:
+    proto_id: "{{ .ProtoID }}"
+    service: "{{ .Svariable.ProtoPackage }}.{{ .Endpoint.Metadata.grpc_service }}"
+    method: "{{ .Endpoint.Metadata.grpc_method }}"
+    pb_option:
+      - "int64_as_string"
+  gheader-plugin: {}
